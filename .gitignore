@@ -1,0 +1,4 @@
+airflow
+airflow_env
+hive
+dags/__pycache__
