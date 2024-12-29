@@ -154,7 +154,6 @@ services:
     volumes:
       - trino_data:/etc/trino
       - ./conf/trino/hive.properties:/etc/trino/catalog/hive.properties
-      # - ./conf/trino/config.properties:/etc/trino/config.properties
       - ./conf/trino/jvm.config:/etc/trino/jvm.config
       - ./conf/hadoop-3.2.1/core-site.xml:/etc/hadoop/core-site.xml
       - ./conf/hadoop-3.2.1/hdfs-site.xml:/etc/hadoop/hdfs-site.xml

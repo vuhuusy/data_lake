@@ -2,6 +2,8 @@
 
 docker exec -it mariadb mysql -u root -p
 
+123456
+
 GRANT ALL PRIVILEGES ON datalake.* TO 'datalake'@'%' IDENTIFIED BY '123456';
 FLUSH PRIVILEGES;
 
@@ -115,16 +117,6 @@ trino --server localhost:8080 --catalog hive --schema default
 
 ### Superset
 
-pip install trino[sqlalchemy]
-
-docker load -i superset.tar
-
-Cấu hình thời gian timeout cho câu query chart
-
-SUPERSET_WEBSERVER_TIMEOUT = int(timedelta(minutes=5).total_seconds())
-
-Phải run khi start service
-
 docker exec -it superset superset fab create-admin \
               --username admin \
               --firstname Superset \
@@ -135,6 +127,17 @@ docker exec -it superset superset fab create-admin \
 docker exec -it superset superset db upgrade
 
 docker exec -it superset superset init
+
+pip install trino[sqlalchemy]
+
+docker load -i superset.tar
+
+Cấu hình thời gian timeout cho câu query chart
+
+SUPERSET_WEBSERVER_TIMEOUT = int(timedelta(minutes=5).total_seconds())
+
+Phải run khi start service
+
 
 
 Thư viện để connect với Hive: 

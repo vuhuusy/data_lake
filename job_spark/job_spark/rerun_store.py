@@ -31,8 +31,8 @@ schema = """
 """
 
 # Khoảng thời gian cần xử lý
-start_date = datetime.strptime("2024-12-01", "%Y-%m-%d")
-end_date = datetime.strptime("2024-12-28", "%Y-%m-%d")
+start_date = datetime.strptime("2023-01-01", "%Y-%m-%d")
+end_date = datetime.strptime("2024-12-30", "%Y-%m-%d")
 
 # Ghi lại thời gian bắt đầu
 overall_start_time = time.time()
