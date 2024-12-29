@@ -38,10 +38,15 @@ start_time = time.time()
 # Đọc tất cả các file từ folder HDFS không có header
 df = spark.read.csv(input_path, schema=schema, header=False)
 
-# Xử lý cột store_status: thay A thành active, I thành inactive
-df = df.withColumn("store_status", when(col("store_status") == "A", "active")
-                                    .when(col("store_status") == "I", "inactive")
-                                    .otherwise(col("store_status")))
+# Đổi tên các cột
+column_renamed_df = df.withColumnRenamed("store", "id") \
+                     .withColumnRenamed("store_status", "status") \
+                     .withColumnRenamed("date", "update_date")
+
+# Xử lý cột status: thay A thành active, I thành inactive
+column_renamed_df = column_renamed_df.withColumn("status", when(col("status") == "A", "active")
+                                                  .when(col("status") == "I", "inactive")
+                                                  .otherwise(col("status")))
 
 # Mapping giá trị cho cột state
 def map_state(state):
@@ -55,31 +60,31 @@ def map_state(state):
     return mapping.get(state, state)
 
 map_state_udf = udf(map_state, StringType())
-df = df.withColumn("state", map_state_udf(col("state")))
+column_renamed_df = column_renamed_df.withColumn("state", map_state_udf(col("state")))
 
-# Chuyển kiểu dữ liệu cột date thành DATE
-df = df.withColumn("date", to_date(col("date"), "yyyy-MM-dd"))
+# Chuyển kiểu dữ liệu cột update_date thành DATE
+column_renamed_df = column_renamed_df.withColumn("update_date", to_date(col("update_date"), "yyyy-MM-dd"))
 
 # Tách latitude (vĩ độ) từ cột store_address
-df = df.withColumn("latitude", regexp_extract(col("store_address"), r"POINT\s*\(-?\d+\.\d+\s*(-?\d+\.\d+)\)", 1).cast("double"))
+column_renamed_df = column_renamed_df.withColumn("latitude", regexp_extract(col("store_address"), r"POINT\s*\(-?\d+\.\d+\s*(-?\d+\.\d+)\)", 1).cast("double"))
 
 # Tách longitude (kinh độ) từ cột store_address
-df = df.withColumn("longitude", regexp_extract(col("store_address"), r"POINT\s*\((-?\d+\.\d+)\s*-?\d+\.\d+\)", 1).cast("double"))
+column_renamed_df = column_renamed_df.withColumn("longitude", regexp_extract(col("store_address"), r"POINT\s*\((-?\d+\.\d+)\s*-?\d+\.\d+\)", 1).cast("double"))
 
 # Bỏ cột store_address vì đã tách thành latitude và longitude
-df = df.drop("store_address")
-
-# Số bản ghi
-row_count = df.count()
+column_renamed_df = column_renamed_df.drop("store_address")
 
 # Ghi dữ liệu đã xử lý ra HDFS
-df.coalesce(1).write \
+column_renamed_df.coalesce(1).write \
     .mode("overwrite") \
     .parquet(output_path)
 
 # Ghi lại thời gian kết thúc
 end_time = time.time()
 execution_time = end_time - start_time
+
+# Số bản ghi
+row_count = column_renamed_df.count()
 
 print("Job completed successfully!")
 print("Output path:", output_path)

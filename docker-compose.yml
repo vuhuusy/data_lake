@@ -140,6 +140,29 @@ services:
       - datanode1
       - datanode2
 
+  ################## TRINO ##################
+  trino:
+    image: trinodb/trino:latest
+    container_name: trino
+    hostname: trino
+    ports:
+      - "28080:8080"
+    environment:
+      - DISCOVERY_SERVER_ENABLED=true
+      - HTTP_SERVER_HTTP_PORT=8080
+      - JVM_HEAP_SIZE=1G
+    volumes:
+      - trino_data:/etc/trino
+      - ./conf/trino/hive.properties:/etc/trino/catalog/hive.properties
+      # - ./conf/trino/config.properties:/etc/trino/config.properties
+      - ./conf/trino/jvm.config:/etc/trino/jvm.config
+      - ./conf/hadoop-3.2.1/core-site.xml:/etc/hadoop/core-site.xml
+      - ./conf/hadoop-3.2.1/hdfs-site.xml:/etc/hadoop/hdfs-site.xml
+    restart: unless-stopped
+    depends_on:
+      - namenode
+      - hive-server
+
 
   ################## ZOOKEEPER ##################
   zookeeper:
@@ -457,3 +480,4 @@ volumes:
   kafka2_data:
   grafana_data:
   mariadb_data:
+  trino_data:

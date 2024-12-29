@@ -1,5 +1,3 @@
-Test
-
 ### MariaDB
 
 docker exec -it mariadb mysql -u root -p
@@ -7,6 +5,7 @@ docker exec -it mariadb mysql -u root -p
 GRANT ALL PRIVILEGES ON datalake.* TO 'datalake'@'%' IDENTIFIED BY '123456';
 FLUSH PRIVILEGES;
 
+USE datalake;
 
 CREATE TABLE streaming_logs (
      app_name VARCHAR(255) NOT NULL,
@@ -53,6 +52,14 @@ Gửi mail: thêm thông tin về ngày gửi, mức độ quan trọng (bthg, q
 
 pip install mysql-connector-python
 
+/spark/bin/spark-submit \
+    --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 \
+    --master spark://spark-master:7077 \
+    --executor-memory 512M \
+    --total-executor-cores 1 \
+    --num-executors 1 \
+    --driver-memory 512M \
+    /job_spark/store_daily.py
 
 
 /spark/bin/spark-submit   --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1   --master spark://spark-master:7077   --executor-memory 512M   --total-executor-cores 1   --driver-memory 512M   /job_spark/bi_streaming.py
@@ -91,12 +98,24 @@ jdbc:hive2://localhost:10000/default
 localhost
 10000
 
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000
+
 Tăng tốc độ
 
 SET hive.exec.parallel=true;
 
 
+### Trino
+
+docker exec -it trino bash
+
+trino://datalake@trino:8080/hive/default
+
+trino --server localhost:8080 --catalog hive --schema default
+
 ### Superset
+
+pip install trino[sqlalchemy]
 
 docker load -i superset.tar
 
