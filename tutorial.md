@@ -113,6 +113,8 @@ docker exec -it trino bash
 
 trino://datalake@trino:8080/hive/default
 
+
+docker exec -it trino bash
 trino --server localhost:8080 --catalog hive --schema default
 
 ### Superset
