@@ -18,8 +18,8 @@ def date_range(start_date, end_date):
         current_date += timedelta(days=1)
 
 # Khoảng thời gian cần xử lý
-start_date = datetime.strptime("2023-01-01", "%Y-%m-%d")
-end_date = datetime.strptime("2024-12-30", "%Y-%m-%d")
+start_date = datetime.strptime("2024-12-01", "%Y-%m-%d")
+end_date = datetime.strptime("2025-01-02", "%Y-%m-%d")
 
 # Schema của bảng iowa_liquor_sales
 schema = """

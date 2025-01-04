@@ -171,7 +171,7 @@ while True:
                     try:
                         data_from_memory = spark.sql(f"SELECT * FROM {query['name']}")
                         data_from_memory.write.mode("append").parquet(
-                            f"hdfs://namenode:9000/gold_zone/sales/bi_core/streaming/{query['name']}"
+                            f"hdfs://namenode:9000/gold_zone/sales/bi_core/streaming/country=usa/state=iowa/{query['name']}"
                         )
                         spark.catalog.uncacheTable(query["name"])
 

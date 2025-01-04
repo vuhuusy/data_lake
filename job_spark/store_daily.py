@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, to_date, when, udf, regexp_extract
+from pyspark.sql.functions import col, to_date, when, udf, regexp_extract, lit
 from pyspark.sql.types import StringType
 from datetime import datetime, timedelta
 import time
@@ -63,7 +63,7 @@ map_state_udf = udf(map_state, StringType())
 column_renamed_df = column_renamed_df.withColumn("state", map_state_udf(col("state")))
 
 # Chuyển kiểu dữ liệu cột update_date thành DATE
-column_renamed_df = column_renamed_df.withColumn("update_date", to_date(col("update_date"), "yyyy-MM-dd"))
+column_renamed_df = column_renamed_df.withColumn("update_date", to_date(lit(n1), "yyyyMMdd"))
 
 # Tách latitude (vĩ độ) từ cột store_address
 column_renamed_df = column_renamed_df.withColumn("latitude", regexp_extract(col("store_address"), r"POINT\s*\(-?\d+\.\d+\s*(-?\d+\.\d+)\)", 1).cast("double"))

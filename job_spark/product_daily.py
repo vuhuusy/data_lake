@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, to_date
+from pyspark.sql.functions import col, to_date, lit
 from datetime import datetime, timedelta
 import time
 
@@ -65,7 +65,7 @@ df = df.select(columns_order)
 
 # Convert dữ liệu cột listdate và update_date thành kiểu DATE
 df = df.withColumn("listdate", to_date(col("listdate"), "yyyy-MM-dd"))
-df = df.withColumn("update_date", to_date(col("partition"), "yyyy-MM-dd"))
+df = df.withColumn("update_date", to_date(lit(n1), "yyyyMMdd"))
 
 # Ghi dữ liệu vào HDFS
 df.coalesce(1).write \

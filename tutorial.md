@@ -54,6 +54,8 @@ Gửi mail: thêm thông tin về ngày gửi, mức độ quan trọng (bthg, q
 
 pip install mysql-connector-python
 
+docker cp ./job_spark spark-master:/job_spark/
+
 /spark/bin/spark-submit \
     --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 \
     --master spark://spark-master:7077 \
@@ -63,34 +65,30 @@ pip install mysql-connector-python
     --driver-memory 512M \
     /job_spark/store_daily.py
 
+/spark/bin/spark-submit \
+    --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 \
+    --master spark://spark-master:7077 \
+    --executor-memory 512M \
+    --total-executor-cores 1 \
+    --num-executors 1 \
+    --driver-memory 512M \
+    /job_spark/product_daily.py
 
-/spark/bin/spark-submit   --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1   --master spark://spark-master:7077   --executor-memory 512M   --total-executor-cores 1   --driver-memory 512M   /job_spark/bi_streaming.py
+/spark/bin/spark-submit \
+    --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 \
+    --master spark://spark-master:7077 \
+    --executor-memory 512M \
+    --total-executor-cores 1 \
+    --num-executors 1 \
+    --driver-memory 512M \
+    /job_spark/sales_daily.py
 
 nohup /spark/bin/spark-submit   --master spark://spark-master:7077  /job_spark/bi_streaming.py > /spark-job.log 2>&1 &/ 
 
 docker exec -it spark-master bash
 
-mkdir /job_spark
 
 
-docker cp ./job_spark spark-master:/job_spark/
-
-cd /spark/bin
-
-/spark/bin/spark-submit \
---jars /spark/jars/spark-sql-kafka-0-10_2.12-3.2.1.jar \
---master spark://spark-master:7077 \
-/job_spark/bi_streaming.py
-
-/spark/bin/spark-submit \
---jars /spark/jars/spark-sql-kafka-0-10_2.12-3.2.1.jar \
---master spark://spark-master:7077 \
-/job_spark/dim_date_generator.py
-
-/spark/bin/spark-submit \
---jars /spark/jars/spark-sql-kafka-0-10_2.12-3.2.1.jar \
---master spark://spark-master:7077 \
-/job_spark/sales.py
 
 ### Hive
 

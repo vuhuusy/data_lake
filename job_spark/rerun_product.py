@@ -16,8 +16,8 @@ def get_vietnam_time():
     return now_utc + timedelta(hours=7)
 
 # Khoảng thời gian cần xử lý
-start_date = datetime.strptime("2023-01-01", "%Y-%m-%d")
-end_date = datetime.strptime("2024-12-30", "%Y-%m-%d")
+start_date = datetime.strptime("2024-12-01", "%Y-%m-%d")
+end_date = datetime.strptime("2025-01-02", "%Y-%m-%d")
 
 # Schema của bảng rd_liquor_product
 schema = """
